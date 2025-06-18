@@ -63,8 +63,7 @@ def run_sim(rot_angle=0):
     #sim.run(until=int(2000/fsrc))
     sim.solve_cw(
         tol=1e-6,                # Tolerance for convergence
-        maxiters=10000,          # Maximum number of iterations
-        frequency=fsrc
+        maxiters=10000          # Maximum number of iterations
     )
     
 
