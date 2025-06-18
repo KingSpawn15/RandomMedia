@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# slurm output files and erros
+*.out
+*.err
 # C extensions
 *.so
 
