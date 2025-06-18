@@ -25,7 +25,8 @@ def run_sim(rot_angle=0):
 
     sources = [
         mp.EigenModeSource(
-            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+            #src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+            src=mp.ContinuousSource(fsrc),
             amplitude=1.0,
             center=mp.Vector3(-(5), 0, 0),
             size=mp.Vector3(y=cell_y),
@@ -58,7 +59,14 @@ def run_sim(rot_angle=0):
     hy_p_f = sim.add_dft_fields([mp.Hy], fsrc, 0, 1, where=mp.Volume(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0,0,0)))
     ez_freq = sim.add_dft_fields([mp.Ez], fsrc, 0, 1, where=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
 
-    sim.run(until=int(2000/fsrc))
+    #sim.run(until=int(2000/fsrc))
+    sim.solve_cw(
+        tol=1e-6,                # Tolerance for convergence
+        max_iters=10000,         # Maximum number of iterations
+        frequency=fsrc,          # Frequency to solve at
+        fields=[mp.Ez, mp.Hy]    # Fields to solve for
+    )
+    
 
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
     hy_val_p = sim.get_dft_array(hy_p_f, mp.Hy, 0)
@@ -131,7 +139,7 @@ def plot_sim_results(results):
         ax2.set_aspect(1)
 
     plt.tight_layout()
-    plt.savefig("fields_0.png", dpi=150, bbox_inches='tight')
+    plt.savefig("fields_0.png", dpi=150, bbox_inches='tight', transparent=True)
     plt.close()
     
     # New plot: Ez components at specified x0 and all y, in a 2x2 grid
@@ -185,7 +193,7 @@ def plot_sim_results(results):
         ax.set_xlim(Y[0, 0], Y[0, -1])
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.savefig("fields.png", dpi=150, bbox_inches='tight')
+    plt.savefig("fields.png", dpi=150, bbox_inches='tight', transparent=True)
     plt.close()
     print("done_0")
     
