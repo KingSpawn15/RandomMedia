@@ -47,6 +47,7 @@ def run_sim(rot_angle=0):
                 center=mp.Vector3(0, 0, 0),
                 size=mp.Vector3(box_size, box_size, mp.inf),
                 material=mp.Medium(epsilon=box_eps))],
+        force_complex_fields=True,
         sources=sources,
         k_point=k_point,
         default_material=default_material
@@ -62,9 +63,8 @@ def run_sim(rot_angle=0):
     #sim.run(until=int(2000/fsrc))
     sim.solve_cw(
         tol=1e-6,                # Tolerance for convergence
-        max_iters=10000,         # Maximum number of iterations
-        frequency=fsrc,          # Frequency to solve at
-        fields=[mp.Ez, mp.Hy]    # Fields to solve for
+        maxiters=10000,          # Maximum number of iterations
+        frequency=fsrc
     )
     
 
