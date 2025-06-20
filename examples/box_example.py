@@ -1,3 +1,5 @@
+import sys
+sys.stdout.reconfigure(line_buffering=True)  # Python 3.7+
 
 import meep as mp
 import numpy as np
