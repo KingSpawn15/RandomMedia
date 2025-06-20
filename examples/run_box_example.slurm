@@ -8,6 +8,7 @@
 #SBATCH --ntasks=32
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=2G
+#SBATCH --unbuffered
 
 source /cm/shared/apps/anaconda3-2024.06-1/etc/profile.d/conda.sh
 conda activate pmp
