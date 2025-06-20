@@ -77,7 +77,7 @@ def run_sim(rot_angle=0):
     (x, y, z, w) = sim.get_array_metadata(vol=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
 
     return {
-        'sim': sim,
+        # 'sim': sim,
         'flux': flux,
         'hy_val_p': hy_val_p,
         'ez_val_p': ez_val_p,
@@ -94,7 +94,7 @@ def run_sim(rot_angle=0):
 def call_test():
     print("done_1")
 def plot_sim_results(results):
-    sim = results['sim']
+    # sim = results['sim']
     ez_val = -results['ez_val']
     x = results['x']
     y = results['y']
@@ -123,7 +123,7 @@ def plot_sim_results(results):
     # Plot subplots for real, imaginary, and absolute values of Ez using x and y coordinates
     fig2, axs2 = plt.subplots(1, 3, figsize=(18, 5))
     ez_components = [np.real(ez_val), np.imag(ez_val), np.abs(ez_val)]
-    (x, y, z, w) = sim.get_array_metadata(vol=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
+    # (x, y, z, w) = sim.get_array_metadata(vol=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
 
     titles = ['Real(Ez)', 'Imag(Ez)', '|Ez|']
     cmaps = ['RdBu', 'RdBu', 'viridis']
@@ -201,7 +201,19 @@ def plot_sim_results(results):
 
 if __name__ == "__main__":
     results = run_sim()
-    plot_sim_results(results)    
+    # plot_sim_results(results)    
 
+    if rank == 0:
+        # Strip Meep objects that aren't pickle-safe
+        results_to_save = {
+            k: v for k, v in results.items() if k not in ['sim', 'flux']
+        }
+
+        # Save to a pickle file
+        pickle_file = "results.pkl"
+        with open(pickle_file, 'wb') as f:
+            pickle.dump(results_to_save, f)
+
+        print(f"Pickled results to: {os.path.abspath(pickle_file)}")
 
    
