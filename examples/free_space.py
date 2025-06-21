@@ -196,7 +196,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    results = run_sim(np.radians(-30))  # Example rotation angle of 45 degrees
+    results = run_sim(rot_angle=np.radians(30))  # Example rotation angle of 45 degrees
     # plot_sim_results(results)    
 
     if rank == 0:
