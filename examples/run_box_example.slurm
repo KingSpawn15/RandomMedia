@@ -2,7 +2,7 @@
 #SBATCH --job-name=box_example
 #SBATCH --output=box_example_%j.out
 #SBATCH --error=box_example_%j.err
-#SBATCH --time=03:00:00
+#SBATCH --time=00:04:00
 #SBATCH --partition=defq
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
