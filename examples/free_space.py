@@ -196,7 +196,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    results = run_sim()  # Example rotation angle of 45 degrees
+    results = run_sim(np.radians(45))  # Example rotation angle of 45 degrees
     # plot_sim_results(results)    
 
     if rank == 0:
@@ -206,7 +206,7 @@ if __name__ == "__main__":
         }
 
         # Save to a pickle file
-        pickle_file = "results_free_space_-30.pkl"
+        pickle_file = "results_free_space_45.pkl"
         with open(pickle_file, 'wb') as f:
             pickle.dump(results_to_save, f)
 
