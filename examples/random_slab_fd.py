@@ -159,10 +159,10 @@ def run_sim(rot_angle=0):
 
     sources = [
         mp.EigenModeSource(
-            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-            # src=mp.ContinuousSource(fsrc),
+            # src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+            src=mp.ContinuousSource(fsrc),
             amplitude=1.0,
-            center=mp.Vector3(-(50 / k0), 0, 0),
+            center=mp.Vector3(-(5), 0, 0),
             size=mp.Vector3(y=cell_y),
             direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
             eig_kpoint=k_point,
@@ -190,11 +190,11 @@ def run_sim(rot_angle=0):
     hy_p_f = sim.add_dft_fields([mp.Hy], fsrc, 0, 1, where=mp.Volume(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0,0,0)))
     ez_freq = sim.add_dft_fields([mp.Ez], fsrc, 0, 1, where=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
 
-    sim.run(until=int(2000/fsrc))
-    # sim.solve_cw(
-    #     tol=1e-6,                # Tolerance for convergence
-    #     maxiters=10000          # Maximum number of iterations
-    # )
+    # sim.run(until=int(2000/fsrc))
+    sim.solve_cw(
+        tol=1e-6,                # Tolerance for convergence
+        maxiters=10000          # Maximum number of iterations
+    )
     
 
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
