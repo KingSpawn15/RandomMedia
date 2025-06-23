@@ -133,7 +133,7 @@ def choi_2011_geometry_slab(width_k0: float = None, sizez_k0:float = None, seed:
                 return mp.Medium(index=2.0)  # eps=4 => n=2
         return mp.air
 
-    material_func.do_averaging = True
+    material_func.do_averaging = False
 
     geometry = [mp.Block(center=mp.Vector3(),
                      size=mp.Vector3(slab_width,size_z),
