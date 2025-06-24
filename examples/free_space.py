@@ -26,20 +26,21 @@ def run_sim(rot_angle=0):
     default_material = mp.Medium(index=n)
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
-    sources = [
-        mp.EigenModeSource(
-            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-            # src=mp.ContinuousSource(fsrc),
-            amplitude=1.0,
-            center=mp.Vector3(-(5), 0, 0),
-            size=mp.Vector3(y=cell_y),
-            direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-            eig_kpoint=k_point,
-            eig_band=1,
-            eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
-            eig_match_freq=True,
-        )
-    ]
+    eig_src = mp.EigenModeSource(
+        src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+        # src=mp.ContinuousSource(fsrc),
+        amplitude=1.0,
+        center=mp.Vector3(-(5), 0, 0),
+        size=mp.Vector3(y=cell_y),
+        direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+        eig_kpoint=k_point,
+        eig_band=1,
+        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+        eig_match_freq=True,
+    )
+    sources = [eig_src]
+
+    pow_frc = eig_src.eig_power(fsrc)
 
     sim = mp.Simulation(
         cell_size=cell_size,
@@ -84,11 +85,13 @@ def run_sim(rot_angle=0):
         'y': y,
         'cell_x': cell_x,
         'cell_y': cell_y,
-        'cell_size': cell_size
+        'cell_size': cell_size,
+        'eig_power': pow_frc
     }
 
 def call_test():
     print("done_1")
+
 def plot_sim_results(results):
     # sim = results['sim']
     ez_val = -results['ez_val']
@@ -196,7 +199,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    results = run_sim(np.radians(-30))  # Example rotation angle of 45 degrees
+    results = run_sim(np.radians(0))  # Example rotation angle of 45 degrees
     # plot_sim_results(results)    
 
     if rank == 0:
@@ -206,7 +209,7 @@ if __name__ == "__main__":
         }
 
         # Save to a pickle file
-        pickle_file = "results_free_space_-30.pkl"
+        pickle_file = "results_free_space_0.pkl"
         with open(pickle_file, 'wb') as f:
             pickle.dump(results_to_save, f)
 
