@@ -195,7 +195,7 @@ def run_sim(rot_angle=0):
     sim.init_sim()
     sim.solve_cw(
         tol=1e-4,                # Tolerance for convergence
-        maxiters=20000          # Maximum number of iterations
+        maxiters=20000,          # Maximum number of iterations
         L = 10
     )
     
