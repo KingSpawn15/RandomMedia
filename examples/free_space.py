@@ -31,7 +31,7 @@ def run_sim(rot_angle=0):
         # src=mp.ContinuousSource(fsrc),
         # amplitude=1.0,
         center=mp.Vector3(-(5), 0, 0),
-        # size=mp.Vector3(y=cell_y),
+        size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         eig_kpoint=k_point,
