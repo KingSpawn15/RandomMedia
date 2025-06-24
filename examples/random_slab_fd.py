@@ -146,7 +146,7 @@ def run_sim(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 40/0.6  # pixels/μm
+    resolution = 20/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -194,9 +194,9 @@ def run_sim(rot_angle=0):
 
     sim.init_sim()
     sim.solve_cw(
-        tol=1e-4,                # Tolerance for convergence
+        tol=1e-8,                # Tolerance for convergence
         maxiters=20000,          # Maximum number of iterations
-        L = 10
+        L = 20
     )
     
 
