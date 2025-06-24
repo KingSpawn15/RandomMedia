@@ -35,7 +35,7 @@ def run_sim(rot_angle=0):
         direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         eig_kpoint=k_point,
         eig_band=1,
-        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+        # eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
         eig_match_freq=True,
     )
     sources = [eig_src]
