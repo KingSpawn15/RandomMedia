@@ -160,7 +160,7 @@ def run_sim(rot_angle=0):
     sources = [
         mp.EigenModeSource(
             # src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-            src=mp.ContinuousSource(fsrc),
+            src=mp.ContinuousSource(fsrc, width=50),
             amplitude=1.0,
             center=mp.Vector3(-(50/k0), 0, 0),
             size=mp.Vector3(y=cell_y),
