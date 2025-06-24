@@ -235,6 +235,6 @@ if __name__ == "__main__":
         }
 
         # Save to a pickle file
-        pickle_file = "results_random_slab_test.pkl"
+        pickle_file = "results_random_slab_fd.pkl"
         with open(pickle_file, 'wb') as f:
             pickle.dump(results_to_save, f)
