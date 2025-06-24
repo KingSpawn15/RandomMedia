@@ -29,11 +29,11 @@ def run_sim(rot_angle=0):
     eig_src = mp.EigenModeSource(
         src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
         # src=mp.ContinuousSource(fsrc),
-        amplitude=1.0,
+        # amplitude=1.0,
         center=mp.Vector3(-(5), 0, 0),
         # size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-        direction=mp.Ez,
+        direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         eig_kpoint=k_point,
         eig_band=1,
         # eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
