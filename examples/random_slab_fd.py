@@ -196,10 +196,15 @@ def run_sim(rot_angle=0):
         maxiters=10000          # Maximum number of iterations
     )
     
+
+    # ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
     ez_val = sim.get_array(center=mp.Vector3(), size = cell_size, cmplx = True, component=mp.Ez)
-    ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
-    hy_val_p = sim.get_dft_array(hy_p_f, mp.Hy, 0)
-    ez_val_p = sim.get_dft_array(ez_p_f, mp.Ez, 0)
+
+    ez_val_p = sim.get_array(center=mp.Vector3(5,0,0), size = mp.Vector3(0,0,0), cmplx = True, component=mp.Ez)
+    hy_val_p = sim.get_array(center=mp.Vector3(5,0,0), size = mp.Vector3(0,0,0), cmplx = True, component=mp.Hy)
+
+    # hy_val_p = sim.get_dft_array(hy_p_f, mp.Hy, 0)
+    # ez_val_p = sim.get_dft_array(ez_p_f, mp.Ez, 0)
     flux_value = mp.get_fluxes(flux)[0]
     flux_freqs = mp.get_flux_freqs(flux)
     (x, y, z, w) = sim.get_array_metadata(vol=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
