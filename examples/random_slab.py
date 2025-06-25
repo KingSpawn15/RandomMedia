@@ -205,7 +205,7 @@ def run_sim(rot_angle=0):
         # print(f"Loaded epsilon shape: {eps_shape}")
 
 
-    resolution = 40/0.6  # pixels/μm
+    resolution = 100/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = np.ceil(100 / k0)
     cell_x = np.ceil(150 / k0 + 4)
