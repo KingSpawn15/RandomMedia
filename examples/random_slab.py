@@ -183,7 +183,7 @@ def export_geometry(rot_angle=0):
         default_material=default_material
     )
 
-    sim.init()
+    sim.init_sim()
     sim.output_epsilon(filename="exported_epsilon_random_90.h5")
 
 
