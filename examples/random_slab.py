@@ -238,7 +238,8 @@ def run_sim(rot_angle=0):
         force_complex_fields=True,
         sources=sources,
         k_point=k_point,
-        default_material=default_material
+        default_material=default_material,
+        eps_averaging = False
     )
 
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
