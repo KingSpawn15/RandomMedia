@@ -283,7 +283,7 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
 
-    export_geometry(0)  # Export the geometry to a file
+    # export_geometry(0)  # Export the geometry to a file
 
     results = run_sim(0)  # Example rotation angle of 45 degrees
     # # plot_sim_results(results)    
