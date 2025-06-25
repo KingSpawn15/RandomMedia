@@ -5,6 +5,7 @@ import pickle
 import meep as mp
 import numpy as np
 import matplotlib
+import h5py
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpi4py import MPI
@@ -184,7 +185,10 @@ def export_geometry(rot_angle=0):
     )
 
     sim.init_sim()
-    sim.output_epsilon(filename="exported_epsilon_random_90.h5")
+    eps_data = sim.get_array(center=mp.Vector3(), size=sim.cell_size, component=mp.Dielectric)
+    
+    with h5py.File("exported_epsilon_random_90.h5", "w") as f:
+        f.create_dataset("epsilon", data=eps_data)
 
 
 def run_sim(rot_angle=0):
