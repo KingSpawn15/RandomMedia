@@ -142,6 +142,51 @@ def choi_2011_geometry_slab(width_k0: float = None, sizez_k0:float = None, seed:
 
 
 
+def export_geometry(rot_angle=0):
+    box_size = 2  # size of the box in μm
+    box_eps = 4
+
+    resolution = 90/0.6  # pixels/μm
+    k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
+    cell_y = 100 / k0
+    cell_x = 150 / k0 + 4
+    cell_size = mp.Vector3(cell_x, cell_y, 0)
+    pml_layers = [mp.PML(thickness=3, direction=mp.X)]
+    fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
+    n = 1  # refractive index of homogeneous material
+    default_material = mp.Medium(index=n)
+    k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+
+    sources = [
+        mp.EigenModeSource(
+            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+            # src=mp.ContinuousSource(fsrc),
+            amplitude=1.0,
+            center=mp.Vector3(-(50 / k0), 0, 0),
+            size=mp.Vector3(y=cell_y),
+            direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+            eig_kpoint=k_point,
+            eig_band=1,
+            eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+            eig_match_freq=True,
+        )
+    ]
+
+    sim = mp.Simulation(
+        cell_size=cell_size,
+        resolution=resolution,
+        boundary_layers=pml_layers,
+        geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
+        force_complex_fields=True,
+        sources=sources,
+        k_point=k_point,
+        default_material=default_material
+    )
+
+    sim.init()
+    sim.output_epsilon(filename="exported_epsilon_random_90.h5")
+
+
 def run_sim(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
@@ -220,16 +265,16 @@ def run_sim(rot_angle=0):
     }
 
 if __name__ == "__main__":
-    results = run_sim(0)  # Example rotation angle of 45 degrees
+    results = export_geometry(0)  # Example rotation angle of 45 degrees
     # plot_sim_results(results)    
 
-    if rank == 0:
-        # Strip Meep objects that aren't pickle-safe
-        results_to_save = {
-            k: v for k, v in results.items() if k not in ['sim', 'flux']
-        }
+    # if rank == 0:
+    #     # Strip Meep objects that aren't pickle-safe
+    #     results_to_save = {
+    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
+    #     }
 
-        # Save to a pickle file
-        pickle_file = "results_random_slab_test.pkl"
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(results_to_save, f)
+    #     # Save to a pickle file
+    #     pickle_file = "results_random_slab_test.pkl"
+    #     with open(pickle_file, 'wb') as f:
+    #         pickle.dump(results_to_save, f)
