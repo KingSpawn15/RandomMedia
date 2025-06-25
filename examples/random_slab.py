@@ -147,7 +147,7 @@ def export_geometry(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 90/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -176,12 +176,12 @@ def export_geometry(rot_angle=0):
     sim = mp.Simulation(
         cell_size=cell_size,
         resolution=resolution,
-        boundary_layers=pml_layers,
+        # boundary_layers=pml_layers,
         geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
-        force_complex_fields=True,
-        sources=sources,
-        k_point=k_point,
-        default_material=default_material
+        # force_complex_fields=True,
+        # sources=sources,
+        # k_point=k_point,
+        # default_material=default_material
     )
 
     sim.init_sim()
@@ -195,7 +195,7 @@ def run_sim(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 90/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -269,16 +269,20 @@ def run_sim(rot_angle=0):
     }
 
 if __name__ == "__main__":
-    results = run_sim(0)  # Example rotation angle of 45 degrees
-    # plot_sim_results(results)    
 
-    if rank == 0:
-        # Strip Meep objects that aren't pickle-safe
-        results_to_save = {
-            k: v for k, v in results.items() if k not in ['sim', 'flux']
-        }
 
-        # Save to a pickle file
-        pickle_file = "results_random_slab_0.pkl"
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(results_to_save, f)
+    export_geometry(0)  # Export the geometry to a file
+
+    # results = run_sim(0)  # Example rotation angle of 45 degrees
+    # # plot_sim_results(results)    
+
+    # if rank == 0:
+    #     # Strip Meep objects that aren't pickle-safe
+    #     results_to_save = {
+    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
+    #     }
+
+    #     # Save to a pickle file
+    #     pickle_file = "results_random_slab_0.pkl"
+    #     with open(pickle_file, 'wb') as f:
+    #         pickle.dump(results_to_save, f)
