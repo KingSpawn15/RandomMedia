@@ -288,13 +288,13 @@ if __name__ == "__main__":
     results = run_sim(0)  # Example rotation angle of 45 degrees
     # # plot_sim_results(results)    
 
-    # if rank == 0:
-    #     # Strip Meep objects that aren't pickle-safe
-    #     results_to_save = {
-    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
-    #     }
+    if rank == 0:
+        # Strip Meep objects that aren't pickle-safe
+        results_to_save = {
+            k: v for k, v in results.items() if k not in ['sim', 'flux']
+        }
 
-    #     # Save to a pickle file
-    #     pickle_file = "results_random_slab_0.pkl"
-    #     with open(pickle_file, 'wb') as f:
-    #         pickle.dump(results_to_save, f)
+        # Save to a pickle file
+        pickle_file = "results_random_slab_0.pkl"
+        with open(pickle_file, 'wb') as f:
+            pickle.dump(results_to_save, f)
