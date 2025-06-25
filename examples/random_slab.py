@@ -178,6 +178,7 @@ def export_geometry(rot_angle=0):
         resolution=resolution,
         # boundary_layers=pml_layers,
         geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
+        eps_averaging = False
         # force_complex_fields=True,
         # sources=sources,
         # k_point=k_point,
@@ -239,7 +240,7 @@ def run_sim(rot_angle=0):
         force_complex_fields=True,
         sources=sources,
         k_point=k_point,
-        default_material=default_material
+        # default_material=default_material
     )
 
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
@@ -281,18 +282,18 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
 
-    # export_geometry(0)  # Export the geometry to a file
+    export_geometry(0)  # Export the geometry to a file
 
-    results = run_sim(0)  # Example rotation angle of 45 degrees
-    # plot_sim_results(results)    
+    # results = run_sim(0)  # Example rotation angle of 45 degrees
+    # # plot_sim_results(results)    
 
-    if rank == 0:
-        # Strip Meep objects that aren't pickle-safe
-        results_to_save = {
-            k: v for k, v in results.items() if k not in ['sim', 'flux']
-        }
+    # if rank == 0:
+    #     # Strip Meep objects that aren't pickle-safe
+    #     results_to_save = {
+    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
+    #     }
 
-        # Save to a pickle file
-        pickle_file = "results_random_slab_0.pkl"
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(results_to_save, f)
+    #     # Save to a pickle file
+    #     pickle_file = "results_random_slab_0.pkl"
+    #     with open(pickle_file, 'wb') as f:
+    #         pickle.dump(results_to_save, f)
