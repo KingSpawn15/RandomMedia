@@ -189,16 +189,25 @@ def export_geometry(rot_angle=0):
     
     with h5py.File("exported_epsilon_random_90.h5", "w") as f:
         f.create_dataset("epsilon", data=eps_data)
+        f.attrs["resolution"] = resolution
+        f.attrs["cell_x"] = cell_x
+        f.attrs["cell_y"] = cell_y
 
 
 def run_sim(rot_angle=0):
-    box_size = 2  # size of the box in μm
-    box_eps = 4
+    
+    with h5py.File("exported_epsilon_random_90.h5", "r") as f:
+        resolution = f.attrs["resolution"]
+        cell_x = f.attrs["cell_x"]
+        cell_y = f.attrs["cell_y"]
+        eps_shape = f["epsilon"].shape
+        # print(f"Loaded epsilon shape: {eps_shape}")
 
-    resolution = 60/0.6  # pixels/μm
+
+    # resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = 100 / k0
-    cell_x = 150 / k0 + 4
+    # cell_y = 100 / k0
+    # cell_x = 150 / k0 + 4
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
     fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
@@ -271,7 +280,7 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
 
-    # export_geometry(0)  # Export the geometry to a file
+    export_geometry(0)  # Export the geometry to a file
 
     results = run_sim(0)  # Example rotation angle of 45 degrees
     # plot_sim_results(results)    
