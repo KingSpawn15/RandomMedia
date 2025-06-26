@@ -158,31 +158,31 @@ def export_geometry(rot_angle=0):
     default_material = mp.Medium(index=n)
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
-    sources = [
-        mp.EigenModeSource(
-            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-            # src=mp.ContinuousSource(fsrc),
-            amplitude=1.0,
-            center=mp.Vector3(-(50 / k0), 0, 0),
-            size=mp.Vector3(y=cell_y),
-            direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-            eig_kpoint=k_point,
-            eig_band=1,
-            eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
-            eig_match_freq=True,
-        )
-    ]
+    # sources = [
+    #     mp.EigenModeSource(
+    #         src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+    #         # src=mp.ContinuousSource(fsrc),
+    #         amplitude=1.0,
+    #         center=mp.Vector3(-(50 / k0), 0, 0),
+    #         size=mp.Vector3(y=cell_y),
+    #         direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+    #         eig_kpoint=k_point,
+    #         eig_band=1,
+    #         eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+    #         eig_match_freq=True,
+    #     )
+    # ]
 
-    sim = mp.Simulation(
-        cell_size=cell_size,
-        resolution=resolution,
-        boundary_layers=pml_layers,
-        geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
-        force_complex_fields=True,
-        sources=sources,
-        k_point=k_point,
-        default_material=default_material
-    )
+    # sim = mp.Simulation(
+    #     cell_size=cell_size,
+    #     resolution=resolution,
+    #     boundary_layers=pml_layers,
+    #     geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
+    #     force_complex_fields=True,
+    #     sources=sources,
+    #     k_point=k_point,
+    #     default_material=default_material
+    # )
 
     # sim.init_sim()
     # eps_data = sim.get_array(center=mp.Vector3(), size=sim.cell_size, component=mp.Dielectric)
