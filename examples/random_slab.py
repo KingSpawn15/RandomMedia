@@ -147,7 +147,7 @@ def export_geometry(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 30/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -196,7 +196,7 @@ def export_geometry(rot_angle=0):
 
 def run_sim(rot_angle=0):
     
-    resolution = 30/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -273,7 +273,7 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
     # print("hello")
-    # export_geometry(0)  # Export the geometry to a file
+    export_geometry(0)  # Export the geometry to a file
 
     results = run_sim(0)  # Example rotation angle of 45 degrees
     # # plot_sim_results(results)    
