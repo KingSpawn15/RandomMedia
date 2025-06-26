@@ -1,7 +1,6 @@
 import meep as mp
 import numpy as np
-import h5py
-import os
+
 # Simulation parameters
 
 def save_file():
@@ -121,5 +120,5 @@ def run_sim(rot_angle):
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
 
 if __name__ == "__main__":
-    # save_file()
+    save_file()
     run_sim(0)
