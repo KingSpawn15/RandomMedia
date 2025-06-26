@@ -184,7 +184,7 @@ def export_geometry(rot_angle=0):
         default_material=default_material
     )
 
-    sim.init_sim()
+    # sim.init_sim()
     # eps_data = sim.get_array(center=mp.Vector3(), size=sim.cell_size, component=mp.Dielectric)
     
     # with h5py.File("exported_epsilon_random_90.h5", "w") as f:
