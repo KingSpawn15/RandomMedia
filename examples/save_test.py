@@ -109,7 +109,7 @@ def run_sim(rot_angle):
     sim.load("examples/test/", single_parallel_file = False)
     sim.change_sources(sources_c)
     sim.change_k_point(kp)
-
+    sim.init_sim()
     # # Add DFT monitor for field extraction
     # sim.init_sim()
     ez_freq = sim.add_dft_fields([mp.Ez], fsrc, 0, 1, where=mp.Volume(center=mp.Vector3(0,0,0), size=cell_size))
@@ -121,5 +121,5 @@ def run_sim(rot_angle):
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
 
 if __name__ == "__main__":
-    save_file()
+    # save_file()
     run_sim(0)
