@@ -186,14 +186,14 @@ def export_geometry(rot_angle=0):
     )
 
     sim.init_sim()
-    eps_data = sim.get_array(center=mp.Vector3(), size=sim.cell_size, component=mp.Dielectric)
+    # eps_data = sim.get_array(center=mp.Vector3(), size=sim.cell_size, component=mp.Dielectric)
     
-    with h5py.File("exported_epsilon_random_90.h5", "w") as f:
-        f.create_dataset("epsilon", data=eps_data)
-        f.attrs["resolution"] = resolution
-        f.attrs["cell_x"] = cell_x
-        f.attrs["cell_y"] = cell_y
-
+    # with h5py.File("exported_epsilon_random_90.h5", "w") as f:
+    #     f.create_dataset("epsilon", data=eps_data)
+    #     f.attrs["resolution"] = resolution
+    #     f.attrs["cell_x"] = cell_x
+    #     f.attrs["cell_y"] = cell_y
+    simx.dump("examples/",single_parallel_file=True)
 
 def run_sim(rot_angle=0):
     
@@ -283,18 +283,18 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
 
-    # export_geometry(0)  # Export the geometry to a file
+    export_geometry(0)  # Export the geometry to a file
 
-    results = run_sim(0)  # Example rotation angle of 45 degrees
-    # # plot_sim_results(results)    
+    # results = run_sim(0)  # Example rotation angle of 45 degrees
+    # # # plot_sim_results(results)    
 
-    if rank == 0:
-        # Strip Meep objects that aren't pickle-safe
-        results_to_save = {
-            k: v for k, v in results.items() if k not in ['sim', 'flux']
-        }
+    # if rank == 0:
+    #     # Strip Meep objects that aren't pickle-safe
+    #     results_to_save = {
+    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
+    #     }
 
-        # Save to a pickle file
-        pickle_file = "results_random_slab_0.pkl"
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(results_to_save, f)
+    #     # Save to a pickle file
+    #     pickle_file = "results_random_slab_0.pkl"
+    #     with open(pickle_file, 'wb') as f:
+    #         pickle.dump(results_to_save, f)
