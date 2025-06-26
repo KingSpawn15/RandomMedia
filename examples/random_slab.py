@@ -234,6 +234,27 @@ def run_sim(rot_angle=0):
     )
     sim.init_sim()
     sim.load("examples/test_random/", single_parallel_file=False)
+
+    kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+
+    sources_c = [
+        mp.EigenModeSource(
+            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+            # src=mp.ContinuousSource(fsrc),
+            amplitude=1.0,
+            center=mp.Vector3(-(50 / k0), 0, 0),
+            size=mp.Vector3(y=cell_y),
+            direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+            eig_kpoint=kp,
+            eig_band=1,
+            eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+            eig_match_freq=True,
+        )
+    ]
+
+    sim.change_sources(sources_c)
+    sim.change_k_point(kp)
+
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
     flux = sim.add_flux(fsrc, 0, 1, flux_region)
 
@@ -275,16 +296,19 @@ if __name__ == "__main__":
     # print("hello")
     export_geometry(0)  # Export the geometry to a file
 
-    results = run_sim(0)  # Example rotation angle of 45 degrees
-    # # plot_sim_results(results)    
+    for angle in [0, 45]:
+        results = run_sim(np.radians(angle))  # Example rotation angle of 45 degrees
+        # # plot_sim_results(results)    
 
-    if rank == 0:
-        # Strip Meep objects that aren't pickle-safe
-        results_to_save = {
-            k: v for k, v in results.items() if k not in ['sim', 'flux']
-        }
+        if rank == 0:
+            # Strip Meep objects that aren't pickle-safe
+            results_to_save = {
+                k: v for k, v in results.items() if k not in ['sim', 'flux']
+            }
 
-        # Save to a pickle file
-        pickle_file = "results_random_slab_0.pkl"
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(results_to_save, f)
+            # Save to a pickle file
+            pickle_file = f"results_random_slab_{angle}.pkl"
+            with open(pickle_file, 'wb') as f:
+                pickle.dump(results_to_save, f)
+
+    
