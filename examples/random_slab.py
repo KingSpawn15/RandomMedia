@@ -192,7 +192,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/",single_parallel_file=True)
+    # sim.dump("examples/",single_parallel_file=True)
 
 def run_sim(rot_angle=0):
     
