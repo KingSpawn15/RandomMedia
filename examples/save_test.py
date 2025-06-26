@@ -53,7 +53,7 @@ def save_file():
 
     # simx.run(until=0)
     simx.init_sim()
-    simx.dump("examples/test/",single_parallel_file=False)
+    simx.dump("examples/test/",single_parallel_file=True)
 
 if __name__ == "__main__":
     save_file()
