@@ -121,5 +121,5 @@ def run_sim(rot_angle):
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
 
 if __name__ == "__main__":
-    # save_file()
-    run_sim(0)
+    save_file()
+    # run_sim(0)
