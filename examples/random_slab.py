@@ -176,13 +176,13 @@ def export_geometry(rot_angle=0):
     sim = mp.Simulation(
         cell_size=cell_size,
         resolution=resolution,
-        # boundary_layers=pml_layers,
+        boundary_layers=pml_layers,
         geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
-        # eps_averaging = False
-        # force_complex_fields=True,
-        # sources=sources,
+        eps_averaging = False
+        force_complex_fields=True,
+        sources=sources,
         k_point=k_point,
-        # default_material=default_material
+        default_material=default_material
     )
 
     sim.init_sim()
