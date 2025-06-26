@@ -5,7 +5,7 @@ import os
 # Simulation parameters
 
 def save_file():
-resolution = 40
+    resolution = 40
     wavelength = 0.6
     fsrc = 1/wavelength  # f = c/λ (assuming c = 1)
     cell_x = 10
