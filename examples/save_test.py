@@ -91,14 +91,14 @@ def run_sim(rot_angle):
         resolution=resolution,
         dimensions = 2,
         boundary_layers=pml_layers,
-        geometry=[
-            mp.Block(
-                center=mp.Vector3(0, 0, 0),
-                size=mp.Vector3(2, 0.5, mp.inf),
-                material=mp.Medium(epsilon=4))],
+        # geometry=[
+        #     mp.Block(
+        #         center=mp.Vector3(0, 0, 0),
+        #         size=mp.Vector3(2, 0.5, mp.inf),
+        #         material=mp.Medium(epsilon=4))],
         # epsilon_input_file="exported_epsilon_test.h5",
-        sources=sources_c,
-        k_point=kp,
+        # sources=sources_c,
+        # k_point=kp,
         default_material=default_material
     )
 
