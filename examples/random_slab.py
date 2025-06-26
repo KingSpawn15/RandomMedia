@@ -294,7 +294,7 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
     # print("hello")
-    export_geometry(0)  # Export the geometry to a file
+    # export_geometry(0)  # Export the geometry to a file
 
     for angle in [0, 45]:
         results = run_sim(np.radians(angle))  # Example rotation angle of 45 degrees
