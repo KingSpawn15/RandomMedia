@@ -196,18 +196,10 @@ def export_geometry(rot_angle=0):
 
 def run_sim(rot_angle=0):
     
-    # with h5py.File("exported_epsilon_random_90.h5", "r") as f:
-    #     resolution = f.attrs["resolution"]
-    #     cell_x = f.attrs["cell_x"]
-    #     cell_y = f.attrs["cell_y"]
-    #     eps_shape = f["epsilon"].shape
-        # print(f"Loaded epsilon shape: {eps_shape}")
-
-
     resolution = 30/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = np.ceil(100 / k0)
-    cell_x = np.ceil(150 / k0 + 4)
+    cell_y = 100 / k0
+    cell_x = 150 / k0 + 4
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
     fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
@@ -234,15 +226,14 @@ def run_sim(rot_angle=0):
         cell_size=cell_size,
         resolution=resolution,
         boundary_layers=pml_layers,
-        epsilon_input_file='exported_epsilon_random_90.h5',
-        eps_averaging = True,
         # geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
         force_complex_fields=True,
         sources=sources,
         k_point=k_point,
-        # default_material=default_material
+        default_material=default_material
     )
-
+    sim.init_sim()
+    sim.load("examples/test_random/simulation.h5", single_parallel_file=False)
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
     flux = sim.add_flux(fsrc, 0, 1, flux_region)
 
@@ -282,18 +273,18 @@ def run_sim(rot_angle=0):
 if __name__ == "__main__":
 
     # print("hello")
-    export_geometry(0)  # Export the geometry to a file
+    # export_geometry(0)  # Export the geometry to a file
 
-    # results = run_sim(0)  # Example rotation angle of 45 degrees
-    # # # plot_sim_results(results)    
+    results = run_sim(0)  # Example rotation angle of 45 degrees
+    # # plot_sim_results(results)    
 
-    # if rank == 0:
-    #     # Strip Meep objects that aren't pickle-safe
-    #     results_to_save = {
-    #         k: v for k, v in results.items() if k not in ['sim', 'flux']
-    #     }
+    if rank == 0:
+        # Strip Meep objects that aren't pickle-safe
+        results_to_save = {
+            k: v for k, v in results.items() if k not in ['sim', 'flux']
+        }
 
-    #     # Save to a pickle file
-    #     pickle_file = "results_random_slab_0.pkl"
-    #     with open(pickle_file, 'wb') as f:
-    #         pickle.dump(results_to_save, f)
+        # Save to a pickle file
+        pickle_file = "results_random_slab_0.pkl"
+        with open(pickle_file, 'wb') as f:
+            pickle.dump(results_to_save, f)
