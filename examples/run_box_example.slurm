@@ -6,7 +6,7 @@
 #SBATCH --partition=defq
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=2G
 
 source /cm/shared/apps/anaconda3-2024.06-1/etc/profile.d/conda.sh
