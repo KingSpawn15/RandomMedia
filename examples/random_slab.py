@@ -291,24 +291,33 @@ def run_sim(rot_angle=0):
         'cell_size': cell_size
     }
 
+
 if __name__ == "__main__":
-
-    # print("hello")
-    # export_geometry(0)  # Export the geometry to a file
-
-    for angle in [0, 45]:
-        results = run_sim(np.radians(angle))  # Example rotation angle of 45 degrees
-        # # plot_sim_results(results)    
-
-        if rank == 0:
-            # Strip Meep objects that aren't pickle-safe
-            results_to_save = {
-                k: v for k, v in results.items() if k not in ['sim', 'flux']
-            }
-
-            # Save to a pickle file
-            pickle_file = f"results_random_slab_{angle}.pkl"
-            with open(pickle_file, 'wb') as f:
-                pickle.dump(results_to_save, f)
+    # Check for dash arguments
+    args = sys.argv[1:]  # skip script name
+    
+    do_export = "--export" in args or "-e" in args
+    do_run = "--run" in args or "-r" in args
+    
+    # If nothing specified, do both
+    if not do_export and not do_run:
+        do_export = do_run = True
+    
+    if do_export:
+        print("Exporting geometry...")
+        export_geometry(0)
+        
+    if do_run:
+        print("Running simulation...")
+        for angle in [0, 45]:
+            results = run_sim(np.radians(angle))
+            
+            if rank == 0:
+                results_to_save = {
+                    k: v for k, v in results.items() if k not in ['sim', 'flux']
+                }
+                pickle_file = f"results_random_slab_{angle}.pkl"
+                with open(pickle_file, 'wb') as f:
+                    pickle.dump(results_to_save, f)
 
     
