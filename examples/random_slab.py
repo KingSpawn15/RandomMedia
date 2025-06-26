@@ -149,8 +149,8 @@ def export_geometry(rot_angle=0):
 
     resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = np.ceil(100 / k0)
-    cell_x = np.ceil(150 / k0 + 4)
+    cell_y = 100 / k0
+    cell_x = 150 / k0 + 4
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
     fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
@@ -281,8 +281,8 @@ def run_sim(rot_angle=0):
 
 if __name__ == "__main__":
 
-    print("hello")
-    # export_geometry(0)  # Export the geometry to a file
+    # print("hello")
+    export_geometry(0)  # Export the geometry to a file
 
     # results = run_sim(0)  # Example rotation angle of 45 degrees
     # # # plot_sim_results(results)    
