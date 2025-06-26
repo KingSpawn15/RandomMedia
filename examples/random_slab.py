@@ -292,32 +292,36 @@ def run_sim(rot_angle=0):
     }
 
 
+
 if __name__ == "__main__":
-    # Check for dash arguments
-    args = sys.argv[1:]  # skip script name
+    args = sys.argv[1:]
     
     do_export = "--export" in args or "-e" in args
     do_run = "--run" in args or "-r" in args
     
-    # If nothing specified, do both
     if not do_export and not do_run:
         do_export = do_run = True
     
+    # Get angles
+    angles = None
+    if "--angle" in args:
+        angles = [float(args[args.index("--angle") + 1])]
+    elif "--angles" in args:
+        idx = args.index("--angles") + 1
+        angles = [float(x) for x in args[idx:] if not x.startswith("-")]
+    
     if do_export:
-        print("Exporting geometry...")
         export_geometry(0)
         
     if do_run:
-        print("Running simulation...")
-        for angle in [0]:
-            results = run_sim(np.radians(angle))
+        if not angles:
+            print("Need --angle 45 or --angles 0 45 90")
+            sys.exit(1)
             
+        for angle in angles:
+            results = run_sim(np.radians(angle))
             if rank == 0:
-                results_to_save = {
-                    k: v for k, v in results.items() if k not in ['sim', 'flux']
-                }
-                pickle_file = f"results_random_slab_{angle}.pkl"
-                with open(pickle_file, 'wb') as f:
+                results_to_save = {k: v for k, v in results.items() if k not in ['sim', 'flux']}
+                with open(f"results_random_slab_{angle}.pkl", 'wb') as f:
                     pickle.dump(results_to_save, f)
-
     
