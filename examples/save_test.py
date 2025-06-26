@@ -57,12 +57,20 @@ def save_file():
 
 def run_sim(rot_angle):
 
-    n = 1
+    resolution = 40
     wavelength = 0.6
+    fsrc = 1/wavelength  # f = c/λ (assuming c = 1)
+    cell_x = 10
+    cell_y = 5
+    cell_size = mp.Vector3(cell_x, cell_y, 0)  # 2D simulation (z = 0)
+    default_material = mp.Medium(epsilon=1.0)  # Default material (air/vacuum)
+
+    n = 1
     fsrc = 1/wavelength
     rot_angle = np.deg2rad(rot_angle)  # Convert angle to radians
-    k0 = 2 * np.pi / wavelength  # Wave number
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+
+    pml_layers = [mp.PML(thickness=1, direction=mp.X)]
 
     sources_c = [
         mp.EigenModeSource(
@@ -113,5 +121,5 @@ def run_sim(rot_angle):
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
 
 if __name__ == "__main__":
-    # save_file()
+    save_file()
     run_sim(0)
