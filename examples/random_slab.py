@@ -147,7 +147,7 @@ def export_geometry(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 60/0.6  # pixels/μm
+    resolution = 30/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -192,7 +192,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/",single_parallel_file=True)
+    sim.dump("examples/test_random/",single_parallel_file=False)
 
 def run_sim(rot_angle=0):
     
@@ -204,7 +204,7 @@ def run_sim(rot_angle=0):
         # print(f"Loaded epsilon shape: {eps_shape}")
 
 
-    resolution = 100/0.6  # pixels/μm
+    resolution = 30/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = np.ceil(100 / k0)
     cell_x = np.ceil(150 / k0 + 4)
