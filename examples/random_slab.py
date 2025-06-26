@@ -233,7 +233,7 @@ def run_sim(rot_angle=0):
         default_material=default_material
     )
     sim.init_sim()
-    sim.load("examples/test_random/simulation.h5", single_parallel_file=False)
+    sim.load("examples/test_random/", single_parallel_file=False)
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
     flux = sim.add_flux(fsrc, 0, 1, flux_region)
 
