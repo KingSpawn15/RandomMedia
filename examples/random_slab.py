@@ -309,7 +309,7 @@ if __name__ == "__main__":
         
     if do_run:
         print("Running simulation...")
-        for angle in [0, 45]:
+        for angle in [0]:
             results = run_sim(np.radians(angle))
             
             if rank == 0:
