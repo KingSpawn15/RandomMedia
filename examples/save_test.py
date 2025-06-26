@@ -53,7 +53,7 @@ def save_file():
 
     # simx.run(until=0)
     simx.init_sim()
-    simx.dump("examples/test/",single_parallel_file=True)
+    simx.dump("examples/test/",single_parallel_file=False)
 
 def run_sim(rot_angle):
 
