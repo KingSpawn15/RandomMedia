@@ -266,7 +266,7 @@ def run_sim(rot_angle=0):
     ez_val = sim.get_dft_array(ez_freq, mp.Ez, 0)
     (x, y, z, w) = sim.get_array_metadata(vol=mp.Volume(center=mp.Vector3(50 / k0, 0, 0), size=mp.Vector3(0,cell_y,0)))
 
-    return ez_freq, y
+    return ez_val, y
 
 
 def mode_to_angle(mode, k0, LM):
