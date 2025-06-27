@@ -290,13 +290,14 @@ def mode_to_angle(mode, k0, LM):
     angle = np.arctan2(ky, kx)
     return angle
 
-def max_propagating_mode(k0, LM):
+def max_propagating_mode(k0, LM, additional=0):
     """
     Returns the largest integer mode number (>=0) for which the mode is still propagating,
     i.e., ky = 2 * mode * pi / LM <= k0.
     """
-    max_mode = int(np.floor(abs(k0 * LM) / (2 * np.pi)))
-    return max_mode
+    wavelength = 2 * np.pi / k0
+    max_mode = np.ceil(LM / wavelength) + additional
+    return int(max_mode)
 
 def ey_to_kz(Ez: np.ndarray, y: np.ndarray, LM: float) -> tuple[np.ndarray, np.ndarray]:
     Ny = len(Ez)
@@ -346,7 +347,7 @@ if __name__ == "__main__":
             E_ky, ky = ey_to_kz(ez_freq, y, LM)
             
             if limit_to_cutoff:
-                n, c = max_propagating_mode(additional), len(ky) // 2  # <-- Pass `additional` here
+                n, c = max_propagating_mode(k0, LM, additional), len(ky) // 2  # <-- Pass `additional` here
                 ky, E_ky = ky[c - n : c + n + 1], E_ky[c - n : c + n + 1]
 
             transmission_matrix.append(E_ky)
