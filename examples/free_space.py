@@ -17,7 +17,7 @@ def run_sim(rot_angle=0):
 
     resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = 5
+    cell_y = 10
     cell_x = 15 + 6
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
@@ -200,7 +200,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for angle in [0, 30, 45, 60]:
+    for angle in [0]:
         results = run_sim(np.radians(angle))  # Example rotation angle of 45 degrees
         # plot_sim_results(results)    
 
@@ -211,7 +211,7 @@ if __name__ == "__main__":
             }
 
             # Save to a pickle file
-            pickle_file = f"results_free_space_{int(angle)}.pkl"
+            pickle_file = f"results_free_space_double_{int(angle)}.pkl"
             with open(pickle_file, 'wb') as f:
                 pickle.dump(results_to_save, f)
 
