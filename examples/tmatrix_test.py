@@ -177,7 +177,7 @@ def export_geometry(rot_angle=0):
         cell_size=cell_size,
         resolution=resolution,
         boundary_layers=pml_layers,
-        geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
+        # geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 100, seed  = 42),
         force_complex_fields=True,
         sources=sources,
         k_point=k_point,
@@ -192,7 +192,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/test_tmatrix/",single_parallel_file=False)
+    sim.dump("examples/test_vacuum_tmatrix/",single_parallel_file=False)
 
 def run_sim(rot_angle=0):
     
@@ -233,7 +233,7 @@ def run_sim(rot_angle=0):
         default_material=default_material
     )
     sim.init_sim()
-    sim.load("examples/test_tmatrix/", single_parallel_file=False)
+    sim.load("examples/test_vacuum_tmatrix/", single_parallel_file=False)
 
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
@@ -335,6 +335,9 @@ if __name__ == "__main__":
         # Collect field FFTs for each angle
         transmission_matrix = []
         
+        limit_to_cutoff = True
+        additional = 0  
+
         for angle in angles:
             print(f"Running simulation for angle: {np.degrees(angle):.2f}°")
             ez_freq, y = run_sim(rot_angle=angle)
@@ -342,6 +345,10 @@ if __name__ == "__main__":
             # ez_freq already contains the DFT, compute FFT
             E_ky, ky = ey_to_kz(ez_freq, y, LM)
             
+            if limit_to_cutoff:
+                n, c = max_propagating_mode(additional), len(ky) // 2  # <-- Pass `additional` here
+                ky, E_ky = ky[c - n : c + n + 1], E_ky[c - n : c + n + 1]
+
             transmission_matrix.append(E_ky)
         
         # Convert to numpy array
