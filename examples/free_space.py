@@ -11,17 +11,17 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-def run_sim(rot_angle=0):
+def run_sim(rot_angle=0, wavelength = 0.6):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 60/0.6  # pixels/μm
-    k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = 10
+    resolution = 60/wavelength  # pixels/μm
+    k0 = 2 * np.pi / wavelength  # wavevector magnitude for wavelength = 0.6 μm
+    cell_y = 5
     cell_x = 15 + 6
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
-    fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
+    fsrc = 1.0 / wavelength  # frequency of planewave (wavelength = 1/fsrc)
     n = 1  # refractive index of homogeneous material
     default_material = mp.Medium(index=n)
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
@@ -200,20 +200,21 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for angle in [0]:
-        results = run_sim(np.radians(angle))  # Example rotation angle of 45 degrees
-        # plot_sim_results(results)    
+    for wavelength in [0.4, 0.6, 1.2]:
+        for angle in [0]:
+            results = run_sim(np.radians(angle), wavelength = wavelength)  # Example rotation angle of 45 degrees
+            # plot_sim_results(results)    
 
-        if rank == 0:
-            # Strip Meep objects that aren't pickle-safe
-            results_to_save = {
-                k: v for k, v in results.items() if k not in ['sim', 'flux']
-            }
+            if rank == 0:
+                # Strip Meep objects that aren't pickle-safe
+                results_to_save = {
+                    k: v for k, v in results.items() if k not in ['sim', 'flux']
+                }
 
-            # Save to a pickle file
-            pickle_file = f"results_free_space_double_{int(angle)}.pkl"
-            with open(pickle_file, 'wb') as f:
-                pickle.dump(results_to_save, f)
+                # Save to a pickle file
+                pickle_file = f"results_free_space_wavelength_{wavelength}.pkl"
+                with open(pickle_file, 'wb') as f:
+                    pickle.dump(results_to_save, f)
 
         # print(f"Pickled results to: {os.path.abspath(pickle_file)}")
 
