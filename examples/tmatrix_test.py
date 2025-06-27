@@ -295,9 +295,8 @@ def max_propagating_mode(k0, LM, additional=0):
     Returns the largest integer mode number (>=0) for which the mode is still propagating,
     i.e., ky = 2 * mode * pi / LM <= k0.
     """
-    wavelength = 2 * np.pi / k0
-    max_mode = np.ceil(LM / wavelength) + additional
-    return int(max_mode)
+    max_mode = int(np.floor(abs(k0 * LM) / (2 * np.pi))) + additional
+    return max_mode
 
 def ey_to_kz(Ez: np.ndarray, y: np.ndarray, LM: float) -> tuple[np.ndarray, np.ndarray]:
     Ny = len(Ez)
