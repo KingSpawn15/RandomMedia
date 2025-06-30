@@ -11,7 +11,7 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40):
+def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
@@ -26,10 +26,10 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40):
     default_material = mp.Medium(index=n)
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
-    eig_src = mp.EigenModeSource(
+    eig_src = [mp.EigenModeSource(
         src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
         # src=mp.ContinuousSource(fsrc),
-        # amplitude=1.0,
+        amplitude=amp,
         center=mp.Vector3(-(5), 0, 0),
         size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
@@ -38,8 +38,8 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40):
         eig_band=1,
         # eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
         eig_match_freq=True,
-    )
-    sources = [eig_src]
+    )  for amp in source_amplitude]
+    sources = eig_src
 
     pow_frc = eig_src.eig_power(fsrc)
 
@@ -200,22 +200,23 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for mesh_resolution in [30, 40, 60]:
-        for wavelength in [0.6]:
-            for angle in [0]:
-                results = run_sim(np.radians(angle), wavelength = wavelength ,mesh_resolution=mesh_resolution)  # Example rotation angle of 45 degrees
-                # plot_sim_results(results)    
+    for (ind, amp) in enumerate( [[1.0], [0.5], [0.5, 0.5]]):  # Example source amplitudes
+        for mesh_resolution in [60]:
+            for wavelength in [0.6]:
+                for angle in [0]:
+                    results = run_sim(np.radians(angle), wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
+                    # plot_sim_results(results)    
 
-                if rank == 0:
-                    # Strip Meep objects that aren't pickle-safe
-                    results_to_save = {
-                        k: v for k, v in results.items() if k not in ['sim', 'flux']
-                    }
+                    if rank == 0:
+                        # Strip Meep objects that aren't pickle-safe
+                        results_to_save = {
+                            k: v for k, v in results.items() if k not in ['sim', 'flux']
+                        }
 
-                    # Save to a pickle file
-                    pickle_file = f"results_free_space_resolution_{mesh_resolution}.pkl"
-                    with open(pickle_file, 'wb') as f:
-                        pickle.dump(results_to_save, f)
+                        # Save to a pickle file
+                        pickle_file = f"results_free_space_source_{ind}.pkl"
+                        with open(pickle_file, 'wb') as f:
+                            pickle.dump(results_to_save, f)
 
         # print(f"Pickled results to: {os.path.abspath(pickle_file)}")
 
