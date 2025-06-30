@@ -11,11 +11,11 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-def run_sim(rot_angle=0, wavelength = 0.6):
+def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 60/wavelength  # pixels/μm
+    resolution = mesh_resolution/wavelength  # pixels/μm
     k0 = 2 * np.pi / wavelength  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 5
     cell_x = 15 + 6
@@ -200,21 +200,22 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for wavelength in [0.4, 0.6, 1.2]:
-        for angle in [0]:
-            results = run_sim(np.radians(angle), wavelength = wavelength)  # Example rotation angle of 45 degrees
-            # plot_sim_results(results)    
+    for mesh_resolution in [30, 40, 60]:
+        for wavelength in [0.6]:
+            for angle in [0]:
+                results = run_sim(np.radians(angle), wavelength = wavelength ,mesh_resolution=mesh_resolution)  # Example rotation angle of 45 degrees
+                # plot_sim_results(results)    
 
-            if rank == 0:
-                # Strip Meep objects that aren't pickle-safe
-                results_to_save = {
-                    k: v for k, v in results.items() if k not in ['sim', 'flux']
-                }
+                if rank == 0:
+                    # Strip Meep objects that aren't pickle-safe
+                    results_to_save = {
+                        k: v for k, v in results.items() if k not in ['sim', 'flux']
+                    }
 
-                # Save to a pickle file
-                pickle_file = f"results_free_space_wavelength_{wavelength}.pkl"
-                with open(pickle_file, 'wb') as f:
-                    pickle.dump(results_to_save, f)
+                    # Save to a pickle file
+                    pickle_file = f"results_free_space_resolution_{mesh_resolution}.pkl"
+                    with open(pickle_file, 'wb') as f:
+                        pickle.dump(results_to_save, f)
 
         # print(f"Pickled results to: {os.path.abspath(pickle_file)}")
 
