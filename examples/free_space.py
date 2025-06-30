@@ -41,7 +41,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
     )  for amp in source_amplitude]
     sources = eig_src
 
-    pow_frc = eig_src.eig_power(fsrc)
+    # pow_frc = eig_src.eig_power(fsrc)
 
     sim = mp.Simulation(
         cell_size=cell_size,
@@ -86,8 +86,8 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         'y': y,
         'cell_x': cell_x,
         'cell_y': cell_y,
-        'cell_size': cell_size,
-        'eig_power': pow_frc
+        'cell_size': cell_size
+        # 'eig_power': pow_frc
     }
 
 def call_test():
