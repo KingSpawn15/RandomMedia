@@ -203,7 +203,7 @@ if __name__ == "__main__":
     for (ind, amp) in enumerate( [[1.0]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
-                for angle in [0]:
+                for angle in [30]:
                     results = run_sim(np.radians(angle), wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
                     # plot_sim_results(results)    
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_nocomplex.pkl"
+                        pickle_file = f"results_free_space_nocomplex_30.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
