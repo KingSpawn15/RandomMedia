@@ -27,7 +27,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
     eig_src = [mp.EigenModeSource(
-        src=mp.GaussianSource(fsrc, fwidth=(1/0.6)/7, is_integrated=True),
+        src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
         # src=mp.ContinuousSource(fsrc),
         amplitude=amp,
         center=mp.Vector3(-(5), 0, 0),
@@ -47,7 +47,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         cell_size=cell_size,
         resolution=resolution,
         boundary_layers=pml_layers,
-        force_complex_fields=True,
+        # force_complex_fields=True,
         sources=sources,
         k_point=k_point,
         default_material=default_material
@@ -202,7 +202,7 @@ def plot_sim_results(results):
 if __name__ == "__main__":
     for (ind, amp) in enumerate( [[1.0]]):  # Example source amplitudes
         for mesh_resolution in [60]:
-            for wavelength in [0.8]:
+            for wavelength in [0.6]:
                 for angle in [0]:
                     results = run_sim(np.radians(angle), wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
                     # plot_sim_results(results)    
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_source_fwidth.pkl"
+                        pickle_file = f"results_free_space_nocomplex.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
