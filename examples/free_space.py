@@ -36,7 +36,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         eig_kpoint=k_point,
         eig_band=1,
-        # eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
         eig_match_freq=True,
     )  for amp in source_amplitude]
     sources = eig_src
