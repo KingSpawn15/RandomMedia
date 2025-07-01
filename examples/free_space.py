@@ -24,19 +24,19 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
     fsrc = 1.0 / wavelength  # frequency of planewave (wavelength = 1/fsrc)
     n = 1  # refractive index of homogeneous material
     default_material = mp.Medium(index=n)
-    k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+    # k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
     eig_src = [mp.EigenModeSource(
         src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
         # src=mp.ContinuousSource(fsrc),
-        amplitude=amp,
+        amplitude=amp[0],
         center=mp.Vector3(-(5), 0, 0),
         size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-        direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-        eig_kpoint=k_point,
+        direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
+        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(amp[1])),
         eig_band=1,
-        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == amp[1] else mp.ODD_Z,
         eig_match_freq=True,
     )  for amp in source_amplitude]
     sources = eig_src
@@ -49,7 +49,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=k_point,
+        # k_point=k_point,
         default_material=default_material
     )
 
@@ -200,10 +200,10 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[1.0]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(1.0, 30), (0.5, -15)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
-                for angle in [30]:
+                for angle in [0]:
                     results = run_sim(np.radians(angle), wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
                     # plot_sim_results(results)    
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_nocomplex_30.pkl"
+                        pickle_file = f"results_free_space_dual.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
