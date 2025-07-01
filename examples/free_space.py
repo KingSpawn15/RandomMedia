@@ -214,7 +214,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_source_{ind}.pkl"
+                        pickle_file = f"results_free_space_source_fwidth.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
