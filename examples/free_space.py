@@ -200,7 +200,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(1.0, 30), (0.5, -15)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(1.0, 30)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
@@ -214,7 +214,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_dual.pkl"
+                        pickle_file = f"results_free_space_dual_test_1.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
