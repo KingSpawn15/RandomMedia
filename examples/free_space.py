@@ -12,6 +12,19 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
+
+    def mode_to_angle(n, wavelength, L):
+        """
+        Given mode index n, wavelength, and slab width L, return the propagation angle in radians.
+        Only works for propagating modes (|ky| <= k0).
+        """
+        k0 = 2 * np.pi / wavelength
+        ky = 2 * np.pi * n / L
+        if np.abs(ky) >= k0:
+            raise ValueError("Mode n={} is evanescent for wavelength={} and L={}".format(n, wavelength, L))
+        theta = np.arcsin(ky / k0)
+        return theta
+
     box_size = 2  # size of the box in μm
     box_eps = 4
 
@@ -34,7 +47,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
-        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(amp[1])),
+        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[2], wavelength = wavelength, L = cell_y)),
         eig_band=1,
         eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == amp[1] else mp.ODD_Z,
         eig_match_freq=True,
@@ -49,7 +62,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(0)),
+        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(source_amplitude[0][1], wavelength = wavelength, L = cell_y)),
         default_material=default_material
     )
 
@@ -200,7 +213,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(1,30), (0.5, -15)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(1,2), (0.5, 4)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
