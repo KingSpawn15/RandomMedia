@@ -49,7 +49,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(amp[1])),
+        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(source_amplitude[0][1])),
         default_material=default_material
     )
 
