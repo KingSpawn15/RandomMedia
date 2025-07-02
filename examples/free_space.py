@@ -49,7 +49,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(source_amplitude[0][1])),
+        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), np.radians(0)),
         default_material=default_material
     )
 
@@ -200,7 +200,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(0.5, -15)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(1,30), (0.5, -15)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
