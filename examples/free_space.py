@@ -59,7 +59,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(-2, wavelength = wavelength, L = cell_y)),
+        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength = wavelength, L = cell_y)),
         default_material=default_material
     )
 
@@ -224,7 +224,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_dual_source_4_bv_-2.pkl"
+                        pickle_file = f"results_free_space_dual_source_4_bv_4.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
