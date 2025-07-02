@@ -200,7 +200,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(1.0, 30)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(1.0, 30), (0.5, -15)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
