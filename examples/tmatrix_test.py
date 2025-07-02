@@ -355,7 +355,7 @@ if __name__ == "__main__":
         T_matrix = np.array(transmission_matrix).T  # Shape: (ky_modes, input_angles)
         
         # Save the transmission matrix
-        with open("transmission_matrix.pkl", "wb") as f:
+        with open("transmission_matrix_VACUUM.pkl", "wb") as f:
             pickle.dump(T_matrix, f)
         
 

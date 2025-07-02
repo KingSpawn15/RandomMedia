@@ -12,5 +12,6 @@
 source /cm/shared/apps/anaconda3-2024.06-1/etc/profile.d/conda.sh
 conda activate pmp
 
-mpirun -n 32 python3 -u examples/free_space.py
+# mpirun -n 32 python3 -u examples/free_space.py
 # mpirun -n 32 python3 -u examples/random_slab.py --run --angle 0
+mpirun -n 32 python3 -u examples/tmatrix_test.py --run
