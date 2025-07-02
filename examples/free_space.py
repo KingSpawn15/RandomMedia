@@ -47,7 +47,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
         eig_band=1,
         eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
-        # eig_match_freq=True,
+        eig_match_freq=True,
     )  for amp in source_amplitude]
     sources = eig_src
 
@@ -59,7 +59,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(0,source_amplitude[0][1]/cell_y,0),
+        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(source_amplitude[0][1], wavelength = wavelength, L = cell_y)),
         default_material=default_material
     )
 
@@ -210,7 +210,7 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(0.5, 4), (1,-5)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(0.5, 4), (1,-2)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
@@ -224,7 +224,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_dual_test_2.pkl"
+                        pickle_file = f"results_free_space_dual_test_1.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
