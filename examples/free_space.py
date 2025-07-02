@@ -47,7 +47,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
         eig_band=1,
         eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
-        eig_match_freq=True,
+        # eig_match_freq=True,
     )  for amp in source_amplitude]
     sources = eig_src
 
