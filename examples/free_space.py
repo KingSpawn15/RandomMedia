@@ -11,7 +11,7 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
+def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
 
     def mode_to_angle(n, wavelength, L):
         """
@@ -24,9 +24,6 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
             raise ValueError("Mode n={} is evanescent for wavelength={} and L={}".format(n, wavelength, L))
         theta = np.arcsin(ky / k0)
         return theta
-
-    box_size = 2  # size of the box in μm
-    box_eps = 4
 
     resolution = mesh_resolution/wavelength  # pixels/μm
     k0 = 2 * np.pi / wavelength  # wavevector magnitude for wavelength = 0.6 μm
@@ -49,7 +46,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
         eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
         eig_band=1,
-        eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == amp[1] else mp.ODD_Z,
+        eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
         eig_match_freq=True,
     )  for amp in source_amplitude]
     sources = eig_src
@@ -213,11 +210,11 @@ def plot_sim_results(results):
     
 
 if __name__ == "__main__":
-    for (ind, amp) in enumerate( [[(0.5, 4)]]):  # Example source amplitudes
+    for (ind, amp) in enumerate( [[(0.5, 4), (1,-5)]]):  # Example source amplitudes
         for mesh_resolution in [60]:
             for wavelength in [0.6]:
                 for angle in [0]:
-                    results = run_sim(np.radians(angle), wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
+                    results = run_sim(wavelength = wavelength , mesh_resolution=mesh_resolution, source_amplitude = amp )  # Example rotation angle of 45 degrees
                     # plot_sim_results(results)    
 
                     if rank == 0:
