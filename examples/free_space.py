@@ -47,7 +47,7 @@ def run_sim(rot_angle=0, wavelength = 0.6, mesh_resolution = 40, source_amplitud
         size=mp.Vector3(y=cell_y),
         # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
         direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
-        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[2], wavelength = wavelength, L = cell_y)),
+        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
         eig_band=1,
         eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == amp[1] else mp.ODD_Z,
         eig_match_freq=True,
