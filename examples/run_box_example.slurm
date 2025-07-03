@@ -5,7 +5,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --partition=cpu-long.q
 #SBATCH --nodes=1
-#SBATCH --ntasks=64
+#SBATCH --ntasks=32
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=2G
 
@@ -14,4 +14,4 @@ conda activate pmp
 
 # mpirun -n 32 python3 -u examples/free_space.py
 # mpirun -n 32 python3 -u examples/random_slab.py --run --angle 0
-mpirun -n 64 python3 -u examples/tmatrix_test.py --export --run
+mpirun -n 32 python3 -u examples/tmatrix_test.py --export --run
