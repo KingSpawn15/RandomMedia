@@ -192,7 +192,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/random_media_500/",single_parallel_file=False)
+    sim.dump("examples/random_media_500_res40/",single_parallel_file=False)
 
 def run_sim(rot_angle=0):
     
@@ -233,7 +233,7 @@ def run_sim(rot_angle=0):
         default_material=default_material
     )
     sim.init_sim()
-    sim.load("examples/random_media_500/", single_parallel_file=False)
+    sim.load("examples/random_media_500_res40/", single_parallel_file=False)
 
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
