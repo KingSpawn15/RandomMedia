@@ -342,7 +342,11 @@ if __name__ == "__main__":
         
     if do_run:
         k0 = 2 * np.pi / 0.6
-        LM = 500 / k0
+        
+        #Delete
+        LM = 50 / k0
+
+        # LM = 500 / k0
         
         # Get permitted angles
         max_mode = max_propagating_mode(k0, LM)
