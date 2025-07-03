@@ -147,7 +147,7 @@ def export_geometry(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 60/0.6  # pixels/μm
+    resolution = 40/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 500 / k0
     cell_x = 150 / k0 + 4
@@ -196,7 +196,7 @@ def export_geometry(rot_angle=0):
 
 def run_sim(rot_angle=0):
     
-    resolution = 60/0.6  # pixels/μm
+    resolution = 40/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 500 / k0
     cell_x = 150 / k0 + 4
@@ -355,7 +355,7 @@ if __name__ == "__main__":
         T_matrix = np.array(transmission_matrix).T  # Shape: (ky_modes, input_angles)
         
         # Save the transmission matrix
-        with open("transmission_matrix_random_500.pkl", "wb") as f:
+        with open("transmission_matrix_random_500_res_40.pkl", "wb") as f:
             pickle.dump(T_matrix, f)
         
 
