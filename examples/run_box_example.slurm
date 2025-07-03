@@ -14,4 +14,4 @@ conda activate pmp
 
 # mpirun -n 32 python3 -u examples/free_space.py
 # mpirun -n 32 python3 -u examples/random_slab.py --run --angle 0
-mpirun -n 32 python3 -u examples/tmatrix_test.py --export --run
+mpirun -n 32 python3 -u examples/tmatrix_test.py --run
