@@ -149,7 +149,11 @@ def export_geometry(rot_angle=0):
 
     resolution = 40/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = 500 / k0
+    
+    cell_y = 50 / k0
+
+    # cell_y = 500 / k0
+    
     cell_x = 150 / k0 + 4
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
@@ -177,7 +181,7 @@ def export_geometry(rot_angle=0):
         cell_size=cell_size,
         resolution=resolution,
         boundary_layers=pml_layers,
-        geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 500, seed  = 42),
+        # geometry = choi_2011_geometry_slab(width_k0 = 50, sizez_k0 = 500, seed  = 42),
         force_complex_fields=True,
         sources=sources,
         k_point=k_point,
@@ -192,13 +196,22 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/random_media_500_res40/",single_parallel_file=False)
+    # sim.dump("examples/random_media_500_res40/",single_parallel_file=False)
+    sim.dump("examples/vacuum_test/",single_parallel_file=False)
 
 def run_sim(rot_angle=0):
     
     resolution = 40/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
-    cell_y = 500 / k0
+    
+
+    ###delte
+    cell_y = 50 / k0
+    
+    
+    # cell_y = 500 / k0
+
+
     cell_x = 150 / k0 + 4
     cell_size = mp.Vector3(cell_x, cell_y, 0)
     pml_layers = [mp.PML(thickness=3, direction=mp.X)]
@@ -233,7 +246,11 @@ def run_sim(rot_angle=0):
         default_material=default_material
     )
     sim.init_sim()
-    sim.load("examples/random_media_500_res40/", single_parallel_file=False)
+
+    sim.load("examples/vacuum_test/", single_parallel_file=False)
+
+
+    # sim.load("examples/random_media_500_res40/", single_parallel_file=False)
 
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
@@ -330,7 +347,7 @@ if __name__ == "__main__":
         # Get permitted angles
         max_mode = max_propagating_mode(k0, LM)
         modes = np.arange(-max_mode, max_mode + 1)
-        angles = [mode_to_angle(mode, k0, LM) for mode in modes]
+        # angles = [mode_to_angle(mode, k0, LM) for mode in modes]
         
         # Collect field FFTs for each angle
         transmission_matrix = []
@@ -338,9 +355,9 @@ if __name__ == "__main__":
         limit_to_cutoff = True
         additional = 0  
 
-        for angle in angles:
-            print(f"Running simulation for angle: {np.degrees(angle):.2f}°")
-            ez_freq, y = run_sim(rot_angle=angle)
+        for mode in modes:
+            print(f"Running simulation for mode: {mode}")
+            ez_freq, y = run_sim(rot_angle=mode_to_angle(mode, k0, LM))
             
             # ez_freq already contains the DFT, compute FFT
             E_ky, ky = ey_to_kz(ez_freq, y, LM)
@@ -349,42 +366,23 @@ if __name__ == "__main__":
                 n, c = max_propagating_mode(k0, LM, additional), len(ky) // 2  # <-- Pass `additional` here
                 ky, E_ky = ky[c - n : c + n + 1], E_ky[c - n : c + n + 1]
 
+            # Create the directory if it doesn't exist
+            os.makedirs("e_field_save", exist_ok=True)
+
+            # Save the data
+            with open(f"e_field_save/free_space_{mode}.pkl", "wb") as fe:
+                pickle.dump(E_ky, fe)
+
             transmission_matrix.append(E_ky)
         
         # Convert to numpy array
-        T_matrix = np.array(transmission_matrix).T  # Shape: (ky_modes, input_angles)
+        T_matrix = np.array(transmission_matrix).T  
         
         # Save the transmission matrix
-        with open("transmission_matrix_random_500_res_40.pkl", "wb") as f:
+        # with open("transmission_matrix_random_500_res_40.pkl", "wb") as f:
+        #     pickle.dump(T_matrix, f)
+        
+
+        # Save the transmission matrix
+        with open("vacuum_test.pkl", "wb") as f:
             pickle.dump(T_matrix, f)
-        
-
-
-
-    # # Build transmission matrix
-    # k0 = 2 * np.pi / 0.6
-    # LM = 100 / k0
-    
-    # # Get permitted angles
-    # max_mode = max_propagating_mode(k0, LM)
-    # modes = np.arange(-max_mode, max_mode + 1)
-    # angles = [mode_to_angle(mode, k0, LM) for mode in modes]
-    
-    # # Collect field FFTs for each angle
-    # transmission_matrix = []
-    
-    # for angle in angles:
-    #     print(f"Running simulation for angle: {np.degrees(angle):.2f}°")
-    #     ez_freq, y = run_sim(rot_angle=angle)
-        
-    #     # ez_freq already contains the DFT, compute FFT
-    #     E_ky, ky = ey_to_kz(ez_freq, y, LM)
-        
-    #     transmission_matrix.append(E_ky)
-    
-    # # Convert to numpy array
-    # T_matrix = np.array(transmission_matrix).T  # Shape: (ky_modes, input_angles)
-    
-    # # Save the transmission matrix
-    # with open("transmission_matrix.pkl", "wb") as f:
-    #     pickle.dump(T_matrix, f)
