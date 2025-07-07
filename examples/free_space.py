@@ -128,7 +128,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
     #     eig_match_freq=True,
     # )  for amp in source_amplitude]
     sources = create_oblique_plane_wave_2d(4, k0 = k0, cell_y = cell_y)
-    sources.append(create_oblique_plane_wave_2d(-2, k0 = k0, cell_y = cell_y)[0])
+    # sources.append(create_oblique_plane_wave_2d(-2, k0 = k0, cell_y = cell_y)[0])
 
 
     # pow_frc = eig_src.eig_power(fsrc)
@@ -139,7 +139,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n,0,0).rotate(mp.Vector3(z=1), mode_to_angle(0, wavelength, cell_y)),
+        k_point=mp.Vector3(fsrc * n,0,0).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength, cell_y)),
         # k_point=mp.Vector3(0,fsrc * n,0),
         default_material=default_material
     )
