@@ -51,7 +51,7 @@ def create_oblique_plane_wave_2d(theta, k0 = 2 * np.pi / 0.6, cell_y = None):
         mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
                   component=mp.Ez,
                   center=mp.Vector3(-(5), 0, 0),
-                  size=mp.Vector3(y=cell_y+0.5),
+                  size=mp.Vector3(y=cell_y+0.01),
                   amp_func=amp_func_ez),
         
         # # H field components for directionality
@@ -122,7 +122,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        # k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength = wavelength, L = cell_y)),
+        k_point=mp.Vector3(fsrc * n),
         default_material=default_material
     )
 
