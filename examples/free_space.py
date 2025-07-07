@@ -128,6 +128,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
     #     eig_match_freq=True,
     # )  for amp in source_amplitude]
     sources = create_oblique_plane_wave_2d(3, k0 = k0, cell_y = cell_y)
+    sources.append(create_oblique_plane_wave_2d(0, k0 = k0, cell_y = cell_y)[0])
 
 
     # pow_frc = eig_src.eig_power(fsrc)
