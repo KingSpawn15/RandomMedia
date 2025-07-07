@@ -11,7 +11,7 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
-def create_oblique_plane_wave_2d(theta, k0 = 2 * np.pi / 0.6, cell_y = None):
+def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
     """
     Create oblique unidirectional plane wave in 2D using both E and H components
     
@@ -19,6 +19,22 @@ def create_oblique_plane_wave_2d(theta, k0 = 2 * np.pi / 0.6, cell_y = None):
     - theta_deg: Oblique angle in degrees from normal
     - frequency: Wave frequency
     """
+
+
+    def mode_to_angle(n, wavelength, L):
+        """
+        Given mode index n, wavelength, and slab width L, return the propagation angle in radians.
+        Only works for propagating modes (|ky| <= k0).
+        """
+        k0 = 2 * np.pi / wavelength
+        ky = 2 * np.pi * n / L
+        if np.abs(ky) >= k0:
+            raise ValueError("Mode n={} is evanescent for wavelength={} and L={}".format(n, wavelength, L))
+        theta = np.arcsin(ky / k0)
+        return theta
+
+    theta = mode_to_angle(mode, k0 / (2 * np.pi), cell_y)
+
     fsrc = k0 / (2 * np.pi)
     kx = k0 * np.cos(theta)
     ky = k0 * np.sin(theta)
@@ -111,7 +127,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
     #     eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
     #     eig_match_freq=True,
     # )  for amp in source_amplitude]
-    sources = create_oblique_plane_wave_2d(np.pi/6, k0 = k0, cell_y = cell_y)
+    sources = create_oblique_plane_wave_2d(3, k0 = k0, cell_y = cell_y)
 
 
     # pow_frc = eig_src.eig_power(fsrc)
