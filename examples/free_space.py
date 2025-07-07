@@ -11,6 +11,68 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
+def create_oblique_plane_wave_2d(theta, k0 = 2 * np.pi / 0.6, cell_y = None):
+    """
+    Create oblique unidirectional plane wave in 2D using both E and H components
+    
+    Parameters:
+    - theta_deg: Oblique angle in degrees from normal
+    - frequency: Wave frequency
+    """
+    
+    kx = k0 * np.cos(theta)
+    ky = k0 * np.sin(theta)
+    # Amplitude functions for proper E-H relationships
+    def amp_func_ez(p):
+        """E field (Ez component) with spatial phase"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        return np.exp(1j * phase)
+    
+    def amp_func_hx(p):
+        """H field (Hx component) for unidirectional propagation"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        # For TM mode: Hx = (ky/k) * Ez / Z0
+        amplitude = (ky / k0)
+        return amplitude * np.exp(1j * phase)
+    
+    def amp_func_hy(p):
+        """H field (Hy component) for unidirectional propagation"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        # For TM mode: Hy = -(kx/k) * Ez / Z0
+        amplitude = -(kx / k0)
+        return amplitude * np.exp(1j * phase)
+    
+    # Create sources with proper E-H relationships
+    sources = [
+        # E field component
+        mp.Source(mp.ContinuousSource(frequency=frequency),
+                  component=mp.Ez,
+                  center=mp.Vector3(-(5), 0, 0),
+                  size=mp.Vector3(y=cell_y),
+                  amp_func=amp_func_ez),
+        
+        # H field components for directionality
+        mp.Source(mp.ContinuousSource(frequency=frequency),
+                  component=mp.Hx,
+                  center=mp.Vector3(-(5), 0, 0),
+                  size=mp.Vector3(y=cell_y),
+                  amp_func=amp_func_hx),
+        
+        mp.Source(mp.ContinuousSource(frequency=frequency),
+                  component=mp.Hy,
+                  center=mp.Vector3(-(5), 0, 0),
+                  size=mp.Vector3(y=cell_y),
+                  amp_func=amp_func_hy)
+    ]
+    
+    # Create simulation
+
+    
+    return sources
+
 def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
 
     def mode_to_angle(n, wavelength, L):
@@ -36,20 +98,21 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
     default_material = mp.Medium(index=n)
     # k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
-    eig_src = [mp.EigenModeSource(
-        src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-        # src=mp.ContinuousSource(fsrc),
-        amplitude=amp[0],
-        center=mp.Vector3(-(5), 0, 0),
-        size=mp.Vector3(y=cell_y),
-        # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-        direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
-        eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
-        eig_band=1,
-        eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
-        eig_match_freq=True,
-    )  for amp in source_amplitude]
-    sources = eig_src
+    # eig_src = [mp.EigenModeSource(
+    #     src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+    #     # src=mp.ContinuousSource(fsrc),
+    #     amplitude=amp[0],
+    #     center=mp.Vector3(-(5), 0, 0),
+    #     size=mp.Vector3(y=cell_y),
+    #     # direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+    #     direction=mp.AUTOMATIC if amp[1] == 0 else mp.NO_DIRECTION,
+    #     eig_kpoint= mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(amp[1], wavelength = wavelength, L = cell_y)),
+    #     eig_band=1,
+    #     eig_parity=mp.EVEN_Y + mp.ODD_Z if amp[1] == 0 else mp.ODD_Z,
+    #     eig_match_freq=True,
+    # )  for amp in source_amplitude]
+    sources = create_oblique_plane_wave_2d(np.pi/6, k0 = k0, cell_y = cell_y)
+
 
     # pow_frc = eig_src.eig_power(fsrc)
 
@@ -59,7 +122,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         boundary_layers=pml_layers,
         # force_complex_fields=True,
         sources=sources,
-        k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength = wavelength, L = cell_y)),
+        # k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength = wavelength, L = cell_y)),
         default_material=default_material
     )
 
@@ -224,7 +287,7 @@ if __name__ == "__main__":
                         }
 
                         # Save to a pickle file
-                        pickle_file = f"results_free_space_dual_source_-2_bv_4.pkl"
+                        pickle_file = f"free_space_source_test.pkl"
                         with open(pickle_file, 'wb') as f:
                             pickle.dump(results_to_save, f)
 
