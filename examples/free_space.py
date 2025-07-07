@@ -59,7 +59,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hy = -(kx/k) * Ez / Z0
         amplitude = -(kx / k0)
-        return 1j*amplitude * np.exp(1j * phase)
+        return amplitude * np.exp(1j * phase)
     
     # Create sources with proper E-H relationships
     sources = [
@@ -137,7 +137,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         cell_size=cell_size,
         resolution=resolution,
         boundary_layers=pml_layers,
-        # force_complex_fields=True,
+        force_complex_fields=True,
         sources=sources,
         k_point=mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), mode_to_angle(4, wavelength, cell_y)),
         # k_point=mp.Vector3(0,fsrc * n,0),
