@@ -123,7 +123,7 @@ def run_sim(wavelength = 0.6, mesh_resolution = 40, source_amplitude = [1.0]):
         # force_complex_fields=True,
         sources=sources,
         # k_point=mp.Vector3(fsrc * n,0,0).rotate(mp.Vector3(z=1), np.pi/6),
-        k_point=mp.Vector3(0,fsrc * n,0,0),
+        k_point=mp.Vector3(0,fsrc * n,0),
         default_material=default_material
     )
 
