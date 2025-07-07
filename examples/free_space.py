@@ -59,7 +59,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hy = -(kx/k) * Ez / Z0
         amplitude = -(kx / k0)
-        return amplitude * np.exp(1j * phase)
+        return 1j*amplitude * np.exp(1j * phase)
     
     # Create sources with proper E-H relationships
     sources = [
