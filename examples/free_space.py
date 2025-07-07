@@ -67,7 +67,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
                   component=mp.Ez,
                   center=mp.Vector3(-(5), 0, 0),
-                  size=mp.Vector3(y=cell_y),
+                  size=mp.Vector3(x = 0.1, y=cell_y),
                   amp_func=amp_func_ez),
         
         # # # H field components for directionality
@@ -80,7 +80,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
                   component=mp.Hy,
                   center=mp.Vector3(-(5), 0, 0),
-                  size=mp.Vector3(y=cell_y),
+                  size=mp.Vector3(x = 0.1, y=cell_y),
                   amp_func=amp_func_hy)
     ]
     
