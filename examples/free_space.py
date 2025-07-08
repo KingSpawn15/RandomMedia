@@ -43,7 +43,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         """E field (Ez component) with spatial phase"""
         x, y = p.x, p.y
         phase = kx * x + ky * y
-        return np.real(np.exp(1j * phase))
+        return np.exp(1j * phase)
     
     def amp_func_hx(p):
         """H field (Hx component) for unidirectional propagation"""
@@ -51,7 +51,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hx = (ky/k) * Ez / Z0
         amplitude = (ky / k0)
-        return np.real(amplitude * np.exp(1j * phase))
+        return amplitude * np.exp(1j * phase)
     
     def amp_func_hy(p):
         """H field (Hy component) for unidirectional propagation"""
@@ -59,7 +59,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hy = -(kx/k) * Ez / Z0
         amplitude = -(kx / k0)
-        return np.real(amplitude * np.exp(1j * phase))
+        return amplitude * np.exp(1j * phase)
     
     # Create sources with proper E-H relationships
     sources = [
@@ -77,11 +77,11 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         #           size=mp.Vector3(y=cell_y),
         #           amp_func=amp_func_hx),
         
-        mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-                  component=mp.Hy,
-                  center=mp.Vector3(-(5), 0, 0),
-                  size=mp.Vector3(y=cell_y),
-                  amp_func=amp_func_hy)
+        # mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+        #           component=mp.Hy,
+        #           center=mp.Vector3(-(5), 0, 0),
+        #           size=mp.Vector3(y=cell_y),
+        #           amp_func=amp_func_hy)
     ]
     
     # Create simulation
