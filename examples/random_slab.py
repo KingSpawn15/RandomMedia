@@ -238,7 +238,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
     #     theta = np.arcsin(ky / k0)
     #     return theta
 
-    theta = mode_to_angle(mode, (2 * np.pi)/k0, cell_y)
+    theta = mode_to_angle(mode, k0, cell_y)
 
     fsrc = k0 / (2 * np.pi)
     kx = k0 * np.cos(theta)
