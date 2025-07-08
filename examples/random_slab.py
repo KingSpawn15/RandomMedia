@@ -346,6 +346,6 @@ if __name__ == "__main__":
             results = run_sim(mode)
             if rank == 0:
                 results_to_save = {k: v for k, v in results.items() if k not in ['sim', 'flux']}
-                with open(f"results_random_slab_mode_{mode}.pkl", 'wb') as f:
+                with open(f"results_random_slab_mode_{int(mode)}.pkl", 'wb') as f:
                     pickle.dump(results_to_save, f)
     
