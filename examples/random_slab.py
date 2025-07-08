@@ -194,6 +194,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["cell_y"] = cell_y
     sim.dump("examples/test_random_60/",single_parallel_file=False)
 
+
 def mode_to_angle(mode, k0, LM):
     """
     Given a waveguide mode number, wavenumber k0, and waveguide width LM,
@@ -214,6 +215,86 @@ def mode_to_angle(mode, k0, LM):
     kx = np.sqrt(kx_sq)
     angle = np.arctan2(ky, kx)
     return angle
+
+def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
+    """
+    Create oblique unidirectional plane wave in 2D using both E and H components
+    
+    Parameters:
+    - theta_deg: Oblique angle in degrees from normal
+    - frequency: Wave frequency
+    """
+
+
+    # def mode_to_angle(n, wavelength, L):
+    #     """
+    #     Given mode index n, wavelength, and slab width L, return the propagation angle in radians.
+    #     Only works for propagating modes (|ky| <= k0).
+    #     """
+    #     k0 = 2 * np.pi / wavelength
+    #     ky = 2 * np.pi * n / L
+    #     if np.abs(ky) >= k0:
+    #         raise ValueError("Mode n={} is evanescent for wavelength={} and L={}".format(n, wavelength, L))
+    #     theta = np.arcsin(ky / k0)
+    #     return theta
+
+    theta = mode_to_angle(mode, (2 * np.pi)/k0, cell_y)
+
+    fsrc = k0 / (2 * np.pi)
+    kx = k0 * np.cos(theta)
+    ky = k0 * np.sin(theta)
+    # Amplitude functions for proper E-H relationships
+    def amp_func_ez(p):
+        """E field (Ez component) with spatial phase"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        return np.exp(1j * phase)
+    
+    def amp_func_hx(p):
+        """H field (Hx component) for unidirectional propagation"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        # For TM mode: Hx = (ky/k) * Ez / Z0
+        amplitude = (ky / k0)
+        return amplitude * np.exp(1j * phase)
+    
+    def amp_func_hy(p):
+        """H field (Hy component) for unidirectional propagation"""
+        x, y = p.x, p.y
+        phase = kx * x + ky * y
+        # For TM mode: Hy = -(kx/k) * Ez / Z0
+        amplitude = -(kx / k0)
+        return amplitude * np.exp(1j * phase)
+    
+    # Create sources with proper E-H relationships
+    sources = [
+        # E field component
+        mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+                  component=mp.Ez,
+                  center=mp.Vector3(-(5), 0, 0),
+                  size=mp.Vector3(y=cell_y),
+                  amp_func=amp_func_ez),
+        
+        # # # H field components for directionality
+        # mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+        #           component=mp.Hx,
+        #           center=mp.Vector3(-(5), 0, 0),
+        #           size=mp.Vector3(y=cell_y),
+        #           amp_func=amp_func_hx),
+        
+        # mp.Source(mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+        #           component=mp.Hy,
+        #           center=mp.Vector3(-(5), 0, 0),
+        #           size=mp.Vector3(y=cell_y),
+        #           amp_func=amp_func_hy)
+    ]
+    
+    # Create simulation
+
+    
+    return sources
+
+
 
 def run_sim(mode=0):
     
@@ -261,22 +342,24 @@ def run_sim(mode=0):
 
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
-    sources_c = [
-        mp.EigenModeSource(
-            src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
-            # src=mp.ContinuousSource(fsrc),
-            amplitude=1.0,
-            center=mp.Vector3(-(50 / k0), 0, 0),
-            size=mp.Vector3(y=cell_y),
-            direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
-            eig_kpoint=kp,
-            eig_band=1,
-            eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
-            eig_match_freq=True,
-        )
-    ]
+    sources = create_oblique_plane_wave_2d(mode, k0 = k0, cell_y = cell_y)
 
-    sim.change_sources(sources_c)
+    # sources_c = [
+    #     mp.EigenModeSource(
+    #         src=mp.GaussianSource(fsrc, fwidth=fsrc/7, is_integrated=True),
+    #         # src=mp.ContinuousSource(fsrc),
+    #         amplitude=1.0,
+    #         center=mp.Vector3(-(50 / k0), 0, 0),
+    #         size=mp.Vector3(y=cell_y),
+    #         direction=mp.AUTOMATIC if rot_angle == 0 else mp.NO_DIRECTION,
+    #         eig_kpoint=kp,
+    #         eig_band=1,
+    #         eig_parity=mp.EVEN_Y + mp.ODD_Z if rot_angle == 0 else mp.ODD_Z,
+    #         eig_match_freq=True,
+    #     )
+    # ]
+
+    sim.change_sources(sources)
     sim.change_k_point(kp)
 
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
