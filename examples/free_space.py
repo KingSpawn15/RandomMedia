@@ -43,7 +43,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         """E field (Ez component) with spatial phase"""
         x, y = p.x, p.y
         phase = kx * x + ky * y
-        return np.exp(1j * phase)
+        return np.real(np.exp(1j * phase))
     
     def amp_func_hx(p):
         """H field (Hx component) for unidirectional propagation"""
