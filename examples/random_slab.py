@@ -340,9 +340,10 @@ def run_sim(mode=0):
     sim.init_sim()
     sim.load("examples/test_random_60/", single_parallel_file=False)
 
-    kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+    # kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
+    kp0 = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), 0)
 
-    sources = create_oblique_plane_wave_2d(mode, k0 = k0, cell_y = cell_y)
+    sources_b = create_oblique_plane_wave_2d(mode, k0 = k0, cell_y = cell_y)
 
     # sources_c = [
     #     mp.EigenModeSource(
@@ -359,8 +360,8 @@ def run_sim(mode=0):
     #     )
     # ]
 
-    sim.change_sources(sources)
-    sim.change_k_point(kp)
+    sim.change_sources(sources_b)
+    sim.change_k_point(kp0)
 
     flux_region = mp.FluxRegion(center=mp.Vector3(5, 0, 0), size=mp.Vector3(0, cell_y, 0))
     flux = sim.add_flux(fsrc, 0, 1, flux_region)
@@ -429,6 +430,6 @@ if __name__ == "__main__":
             results = run_sim(mode)
             if rank == 0:
                 results_to_save = {k: v for k, v in results.items() if k not in ['sim', 'flux']}
-                with open(f"results_random_slab_mode_{int(mode)}.pkl", 'wb') as f:
+                with open(f"results_random_slab_mode_{int(mode)}_zero_pbc.pkl", 'wb') as f:
                     pickle.dump(results_to_save, f)
     
