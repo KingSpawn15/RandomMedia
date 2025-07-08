@@ -147,7 +147,7 @@ def export_geometry(rot_angle=0):
     box_size = 2  # size of the box in μm
     box_eps = 4
 
-    resolution = 90/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -192,7 +192,7 @@ def export_geometry(rot_angle=0):
     #     f.attrs["resolution"] = resolution
     #     f.attrs["cell_x"] = cell_x
     #     f.attrs["cell_y"] = cell_y
-    sim.dump("examples/test_random/",single_parallel_file=False)
+    sim.dump("examples/test_random_60/",single_parallel_file=False)
 
 def mode_to_angle(mode, k0, LM):
     """
@@ -217,7 +217,7 @@ def mode_to_angle(mode, k0, LM):
 
 def run_sim(mode=0):
     
-    resolution = 90/0.6  # pixels/μm
+    resolution = 60/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
     cell_y = 100 / k0
     cell_x = 150 / k0 + 4
@@ -257,7 +257,7 @@ def run_sim(mode=0):
         default_material=default_material
     )
     sim.init_sim()
-    sim.load("examples/test_random/", single_parallel_file=False)
+    sim.load("examples/test_random_60/", single_parallel_file=False)
 
     kp = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
