@@ -194,7 +194,28 @@ def export_geometry(rot_angle=0):
     #     f.attrs["cell_y"] = cell_y
     sim.dump("examples/test_random/",single_parallel_file=False)
 
-def run_sim(rot_angle=0):
+def mode_to_angle(mode, k0, LM):
+    """
+    Given a waveguide mode number, wavenumber k0, and waveguide width LM,
+    compute the propagation angle (in radians) of the mode.
+    ky = 2 * mode * pi / LM
+    kx = sqrt(k0**2 - ky**2)
+    angle = arctan(ky / kx)
+    Warn or raise error if mode is evanescent (ky > k0).
+    """
+    ky = 2 * mode * np.pi / LM
+    if abs(ky) > abs(k0):
+        raise ValueError("ky is greater than k0; mode is not guided (evanescent).")
+    elif abs(ky) == abs(k0):
+        raise ValueError("ky equals k0; mode is at cutoff (evanescent).")
+    kx_sq = k0**2 - ky**2
+    if kx_sq < 0:
+        raise ValueError("kx is imaginary; mode is evanescent.")
+    kx = np.sqrt(kx_sq)
+    angle = np.arctan2(ky, kx)
+    return angle
+
+def run_sim(mode=0):
     
     resolution = 90/0.6  # pixels/μm
     k0 = 2 * np.pi / 0.6  # wavevector magnitude for wavelength = 0.6 μm
@@ -205,6 +226,9 @@ def run_sim(rot_angle=0):
     fsrc = 1.0 / 0.6  # frequency of planewave (wavelength = 1/fsrc)
     n = 1  # refractive index of homogeneous material
     default_material = mp.Medium(index=n)
+
+    rot_angle = mode_to_angle(mode, k0, cell_y)
+
     k_point = mp.Vector3(fsrc * n).rotate(mp.Vector3(z=1), rot_angle)
 
     sources = [
@@ -302,26 +326,26 @@ if __name__ == "__main__":
     if not do_export and not do_run:
         do_export = do_run = True
     
-    # Get angles
-    angles = None
-    if "--angle" in args:
-        angles = [float(args[args.index("--angle") + 1])]
-    elif "--angles" in args:
-        idx = args.index("--angles") + 1
-        angles = [float(x) for x in args[idx:] if not x.startswith("-")]
+    # Get mode
+    modes = None
+    if "--mode" in args:
+        modes = [float(args[args.index("--mode") + 1])]
+    elif "--modes" in args:
+        idx = args.index("--modes") + 1
+        modes = [float(x) for x in args[idx:] if not x.startswith("-")]
     
     if do_export:
         export_geometry(0)
         
     if do_run:
-        if not angles:
-            print("Need --angle 45 or --angles 0 45 90")
+        if not modes:
+            print("Need --mode ")
             sys.exit(1)
             
-        for angle in angles:
-            results = run_sim(np.radians(angle))
+        for mode in modes:
+            results = run_sim(mode)
             if rank == 0:
                 results_to_save = {k: v for k, v in results.items() if k not in ['sim', 'flux']}
-                with open(f"results_random_slab_{angle}.pkl", 'wb') as f:
+                with open(f"results_random_slab_mode_{mode}.pkl", 'wb') as f:
                     pickle.dump(results_to_save, f)
     
