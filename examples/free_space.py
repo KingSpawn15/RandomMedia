@@ -51,7 +51,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hx = (ky/k) * Ez / Z0
         amplitude = (ky / k0)
-        return amplitude * np.exp(1j * phase)
+        return np.real(amplitude * np.exp(1j * phase))
     
     def amp_func_hy(p):
         """H field (Hy component) for unidirectional propagation"""
@@ -59,7 +59,7 @@ def create_oblique_plane_wave_2d(mode, k0 = 2 * np.pi / 0.6, cell_y = None):
         phase = kx * x + ky * y
         # For TM mode: Hy = -(kx/k) * Ez / Z0
         amplitude = -(kx / k0)
-        return amplitude * np.exp(1j * phase)
+        return np.real(amplitude * np.exp(1j * phase))
     
     # Create sources with proper E-H relationships
     sources = [
