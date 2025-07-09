@@ -432,4 +432,3 @@ if __name__ == "__main__":
                 results_to_save = {k: v for k, v in results.items() if k not in ['sim', 'flux']}
                 with open(f"results_random_slab_mode_{int(mode)}_zero_pbc.pkl", 'wb') as f:
                     pickle.dump(results_to_save, f)
-    

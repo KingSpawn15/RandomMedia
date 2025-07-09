@@ -7,7 +7,12 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=2G
+#SBATCH --mem-per-cpu=2G
+# What is the maximum -- ~ 256 MAx
+# Can I select the node 
+# -- nodename 
+# sinfo / sview
+# local temp folder
 
 source /cm/shared/apps/anaconda3-2024.06-1/etc/profile.d/conda.sh
 conda activate pmp
