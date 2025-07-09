@@ -7,7 +7,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=2G
+#SBATCH --mem=128G
 # What is the maximum -- ~ 256 MAx
 # Can I select the node 
 # -- nodename 
